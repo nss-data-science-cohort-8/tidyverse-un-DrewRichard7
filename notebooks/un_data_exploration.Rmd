@@ -99,6 +99,22 @@ gdp_pivoted |>
 ```
 
 12. Which country had the highest % change in GDP per capita? Create a line plot showing these country's GDP per capita for all years for which you have data. Put both line charts on the same plot.
+```{r}
+max_pct_chg <-gdp_pivoted |> 
+  arrange(desc(Percent_Change)) |> 
+  head(2)
+
+max_pct_chg
+```
+```{r}
+max_pct_chg |> 
+  pivot_longer(
+    cols = -Country,
+    names_to = "Year",
+    values_to = "GDP_Per_Capita"
+  )
+
+```
 
 13. Read in continents.csv contained in the `data` folder into a new tibble called `continents`. We will be using this tibble to add a new column to our dataset.
 
