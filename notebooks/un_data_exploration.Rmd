@@ -85,10 +85,18 @@ gdp_pivoted
 
 10. Create a new column in `gdp_pivoted` named `Percent_Change`. This column should contain the percent change in GDP_Per_Capita from 1990 to 2021. Hint: Percent change is calculated as 100*(New Value - Old Value) / Old Value.
 ```{r}
+gdp_pivoted <- gdp_pivoted |> 
+  mutate('Percent_Change' = 100*(`2021`-`1990`)/`1990`)
 
+gdp_pivoted
 ```
 
 11. How many countries experienced a negative percent change in GDP per capita from 1990 to 2021?
+```{r}
+gdp_pivoted |> 
+  filter(Percent_Change < 0) |> 
+  count()
+```
 
 12. Which country had the highest % change in GDP per capita? Create a line plot showing these country's GDP per capita for all years for which you have data. Put both line charts on the same plot.
 
