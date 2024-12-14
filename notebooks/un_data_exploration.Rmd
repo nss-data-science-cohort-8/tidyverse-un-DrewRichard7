@@ -103,22 +103,43 @@ gdp_pivoted |>
 max_pct_chg <-gdp_pivoted |> 
   arrange(desc(Percent_Change)) |> 
   head(2)
-
-max_pct_chg
 ```
 ```{r}
-max_pct_chg |> 
+max_pct_chg <- max_pct_chg |> 
+  select(-`Percent_Change`) |> 
   pivot_longer(
     cols = -Country,
     names_to = "Year",
     values_to = "GDP_Per_Capita"
-  )
+  ) |> 
+  arrange(Country, Year)
+```
 
+
+```{r}
+print(max_pct_chg)
+ggplot(max_pct_chg, aes(x = Year, y = GDP_Per_Capita, color = Country, group=Country)) +
+  geom_line() +
+  labs(title = "GDP Per Capita Over Time by Country",
+       x = "Year",
+       y = "GDP Per Capita",
+       color = "Country") +
+  scale_x_discrete(breaks=seq(1990, 2022, 2)) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
 13. Read in continents.csv contained in the `data` folder into a new tibble called `continents`. We will be using this tibble to add a new column to our dataset.
+```{r}
+continents <- read_csv('../data/continents.csv', show_col_types = FALSE)
+continents
+```
 
 14. Merge gdp_df and continents. Keep only the countries that appear in both data frames. Save the result back to gdp_df.
+```{r}
+gdp_df <- inner_join(gdp_df, continents, by='Country')
+gdp_df |> 
+  head(3)
+```
 
 15. Determine the number of countries per continent. Create a bar chart showing this.
 
