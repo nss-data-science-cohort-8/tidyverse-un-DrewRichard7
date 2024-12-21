@@ -19,7 +19,10 @@ gdp_df |>
 2. Drop the 'Value Footnotes' column, and rename the remaining columns to 'Country', 'Year', and 'GDP_Per_Capita'.
 ```{r}
 gdp_df <- gdp_df |> 
-  select(Country = 'Country or Area', Year, GDP_Per_Capita = Value, -`Value Footnotes`)
+  select(
+    Country = 'Country or Area', 
+    Year, 
+    GDP_Per_Capita = Value)
 ```
 
 3. Which years are represented in this dataset? How many observations are there per year? Make a plot to view the number of observations per year.
@@ -29,6 +32,7 @@ years_distinct <- gdp_df |>
   distinct(Year)
 print(count(years_distinct))
 print(range(years_distinct))
+
 # create barplot for number of countries per year
 ggplot(gdp_df, aes(x=Year)) +
   geom_bar(fill='#00CC96') +
@@ -37,10 +41,11 @@ ggplot(gdp_df, aes(x=Year)) +
 
 4. How many countries are represented in this dataset? Which countries have the fewest observations?
 ```{r}
+# how many countries?
 countries_distinct <- gdp_df |> 
   distinct(Country)
 print(count(countries_distinct))
-
+# fewest observations
 gdp_df |> 
   count(Country, sort=TRUE) |> 
   tail()
@@ -48,6 +53,7 @@ gdp_df |>
 
 5. Create a new tibble by subsetting `gdp_df` to just the year 2021. Call this new tibble `gdp_2021`.
 ```{r}
+# filter to year 2021
 gdp_2021 <- gdp_df |> 
   filter(Year==2021)
 ```
@@ -66,10 +72,11 @@ ggplot(gdp_2021, aes(x=GDP_Per_Capita)) +
 
 8. Find the top 5 counties and bottom 5 countries by GDP per capita in 2021.
 ```{r}
+# top five
 top_five_gdppc <- gdp_2021 |> 
   arrange(desc(GDP_Per_Capita)) |> 
   head()
-
+# bottom five
 bottom_five_gdppc <-gdp_2021 |> 
   arrange(desc(GDP_Per_Capita)) |> 
   tail()
@@ -77,6 +84,7 @@ bottom_five_gdppc <-gdp_2021 |>
 
 9. Now, return to the full dataset, `gdp_df`. Pivot the data for 1990 and 2021 (using `pivot_wider()` function) so that each row corresponds to a country, each column corresponds to a year, and the values in the table give the GDP_Per_Capita amount. Drop any rows that are missing values for either 1990 or 2021. Save the result to a tibble named `gdp_pivoted`.
 ```{r}
+# pivot data to wide format, drop NA values in 1990 | 2021
 gdp_pivoted <- gdp_df |> 
   pivot_wider(values_from = GDP_Per_Capita, names_from = Year) |> 
   drop_na(c('1990', '2021'))
@@ -104,6 +112,7 @@ gdp_pivoted |>
 max_pct_chg <-gdp_pivoted |> 
   arrange(desc(Percent_Change)) |> 
   head(2)
+max_pct_chg
 ```
 ```{r}
 max_pct_chg <- max_pct_chg |> 
@@ -144,9 +153,17 @@ gdp_df |>
 
 15. Determine the number of countries per continent. Create a bar chart showing this.
 ```{r}
-# Use count() to find number of countries per continent
-continent_counts <- gdp_df |> 
+gdp_df |> 
+  distinct(Country, Continent) |> 
   count(Continent)
+```
+
+```{r}
+# Use count() and distinct() to find number of countries per continent
+continent_counts <- gdp_df |> 
+  distinct(Country, Continent) |> 
+  count(Continent)
+continent_counts
 ```
 ```{r}
 # Create barplot using geom_col() to show number of countries by continent
